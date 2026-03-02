@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
-Launch My OpenClaw — Control Panel Widget
+OpenClaw Control Panel Widget
 GTK3 desktop widget for OpenClaw service status and quick actions.
-https://Launchmyopenclaw.com
 """
 
 import base64
@@ -54,8 +53,8 @@ LOGO_B64 = (
     "JYZvVlkZUOI6kfDq/xDwi4L/AKG5ITVmS9opAAAAAElFTkSuQmCC"
 )
 
-REPO_OWNER = "10xcoldleads"
-REPO_NAME = "clawglue"
+REPO_OWNER = "brandonbelew"
+REPO_NAME = "secureclaw"
 DEFAULT_PORT = 18789
 REPO_BRANCH_OVERRIDE = None  # injected at install time by install_widget.sh
 
@@ -339,7 +338,7 @@ class StatusCard:
 class OpenClawWidget(Gtk.Window):
 
     def __init__(self):
-        super().__init__(title="Launch My OpenClaw — Control Panel")
+        super().__init__(title="OpenClaw Control Panel")
         self.set_default_size(420, -1)
         self.set_resizable(False)
         self.set_position(Gtk.WindowPosition.CENTER)
@@ -405,7 +404,7 @@ class OpenClawWidget(Gtk.Window):
         box.pack_start(logo_img, False, False, 0)
 
         text_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
-        title = Gtk.Label(label="Launch My OpenClaw")
+        title = Gtk.Label(label="OpenClaw Control Panel")
         title.get_style_context().add_class("title-label")
         title.set_halign(Gtk.Align.START)
         text_box.pack_start(title, False, False, 0)

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Launch My OpenClaw — Post-Lockdown Setup Continuation Script
+Post-Lockdown Setup Continuation Script
 Completes OpenClaw and Chrome installation after server lockdown
-https://Launchmyopenclaw.com
+Author: Brandon
 """
 
 import os
@@ -104,7 +104,7 @@ class PostLockdownSetup:
 {Colors.CYAN}Give your server a memorable name. It will appear in:{Colors.ENDC}
   • Your Tailscale admin console  (tailscale.com/admin/machines)
   • Your terminal prompt
-  • The Launch My OpenClaw Control Panel widget
+  • The OpenClaw Control Panel widget
 
 {Colors.DIM}Examples:  trade-bot-1   openclaw-prod   my-vps   btc-server{Colors.ENDC}
 
@@ -278,7 +278,7 @@ Current hostname: {Colors.BOLD}{current}{Colors.ENDC}
         self.log("Installing security check tool...")
 
         script = r"""#!/bin/bash
-# Launch My OpenClaw — Security Verification
+# SecureClaw Security Verification
 
 # ── Auto-elevate to root ───────────────────────────────────────────────────────
 if [[ $EUID -ne 0 ]]; then
@@ -307,7 +307,7 @@ RESTART_SVCS=()
 clear
 echo
 echo -e "${BOLD}  ╔══════════════════════════════════════════════════════════════╗${RESET}"
-echo -e "${BOLD}  ║     🦞  Launch My OpenClaw — Security Verification          ║${RESET}"
+echo -e "${BOLD}  ║        🦞  SecureClaw Security Verification                 ║${RESET}"
 echo -e "${BOLD}  ║        $(date '+%Y-%m-%d %H:%M:%S')                                 ║${RESET}"
 echo -e "${BOLD}  ╚══════════════════════════════════════════════════════════════╝${RESET}"
 
@@ -621,14 +621,14 @@ WantedBy=timers.target
             return "main"
 
     def install_openclaw_widget(self):
-        """Install the Launch My OpenClaw Control Panel desktop widget."""
-        print(f"\n{Colors.HEADER}=== LAUNCH MY OPENCLAW CONTROL PANEL ==={Colors.ENDC}")
-        self.log("Installing Launch My OpenClaw Control Panel...")
+        """Install the OpenClaw Control Panel desktop widget."""
+        print(f"\n{Colors.HEADER}=== OPENCLAW CONTROL PANEL ==={Colors.ENDC}")
+        self.log("Installing OpenClaw Control Panel...")
 
         branch = self._get_repo_branch()
         self.log(f"Using branch: {branch}")
 
-        raw_base = f"https://raw.githubusercontent.com/10xcoldleads/clawglue/{branch}"
+        raw_base = f"https://raw.githubusercontent.com/brandonbelew/secureclaw/{branch}"
         widget_url = f"{raw_base}/ubuntu/openclaw_widget.py"
         install_bin = "/usr/local/bin/openclaw-widget"
 
@@ -661,8 +661,8 @@ WantedBy=timers.target
         desktop_dir.mkdir(parents=True, exist_ok=True)
         desktop_content = (
             "[Desktop Entry]\n"
-            "Name=Launch My OpenClaw — Control Panel\n"
-            "Comment=Launch My OpenClaw — service status and launcher\n"
+            "Name=OpenClaw Control Panel\n"
+            "Comment=OpenClaw service status and launcher\n"
             "Exec=/usr/local/bin/openclaw-widget\n"
             "Icon=network-server\n"
             "Terminal=false\n"
@@ -707,7 +707,7 @@ WantedBy=timers.target
 
             self.log(f"Autostart + desktop shortcut created for {username}", "SUCCESS")
 
-        self.log("Launch My OpenClaw Control Panel installed", "SUCCESS")
+        self.log("OpenClaw Control Panel installed", "SUCCESS")
 
     def create_user_shortcuts(self):
         """Create desktop shortcuts for regular users"""
