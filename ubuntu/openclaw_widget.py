@@ -3,8 +3,6 @@
 Launch My OpenClaw — Control Panel Widget
 GTK3 desktop widget for OpenClaw service status and quick actions.
 https://Launchmyopenclaw.com
-In collaboration with Jeff & Brandan
-Originally from SecureClaw by Brandon Belew — modified with attribution
 """
 
 import base64

@@ -4,9 +4,6 @@
 
 https://Launchmyopenclaw.com
 
-*In collaboration with Jeff & Brandan*
-*Originally forked from SecureClaw by Brandon Belew — modified with full attribution*
-
 ---
 
 ## What is Launch My OpenClaw?
@@ -37,10 +34,6 @@ wget -qO /tmp/lmo-install.sh https://raw.githubusercontent.com/10xcoldleads/claw
 ```bash
 wget -qO /tmp/lmo-install.sh https://raw.githubusercontent.com/10xcoldleads/clawglue/dev/install.sh && sudo bash /tmp/lmo-install.sh dev
 ```
-
-## Credits
-
-This project is a fork of [SecureClaw](https://github.com/brandonbelew/secureclaw) by **Brandon Belew** (Craw-Kan Telephone). We are grateful for the original work by Jeff & Brandan that made this possible. This project has been modified and rebranded for the Launch My OpenClaw community while maintaining ethical attribution to the original authors.
 
 ## License
 

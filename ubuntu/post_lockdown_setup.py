@@ -3,8 +3,6 @@
 Launch My OpenClaw — Post-Lockdown Setup Continuation Script
 Completes OpenClaw and Chrome installation after server lockdown
 https://Launchmyopenclaw.com
-In collaboration with Jeff & Brandan
-Originally by Brandon (SecureClaw) — modified with attribution
 """
 
 import os

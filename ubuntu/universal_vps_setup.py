@@ -4,8 +4,6 @@ Launch My OpenClaw — Universal Ubuntu VPS Setup Script
 Handles both SSH and RDP initial access scenarios
 Configures RDP, Tailscale, security lockdown, and installs OpenClaw + Chrome
 https://Launchmyopenclaw.com
-In collaboration with Jeff & Brandan
-Originally by Brandon (SecureClaw) — modified with attribution
 """
 
 import os

@@ -1,8 +1,6 @@
 #!/bin/bash
 # Launch My OpenClaw — Ubuntu VPS Setup Installer
 # https://Launchmyopenclaw.com
-# In collaboration with Jeff & Brandan
-# Forked from SecureClaw by Brandon Belew — modified with attribution
 
 set -e
 
@@ -32,7 +30,6 @@ print_banner() {
     echo -e "${BLUE}${BOLD}  ║      🦞  Launch My OpenClaw — Setup Installer                 ║${RESET}"
     echo -e "${BLUE}${BOLD}  ║      Secure Remote Desktop Environment                      ║${RESET}"
     echo -e "${BLUE}${BOLD}  ║      https://Launchmyopenclaw.com                           ║${RESET}"
-    echo -e "${BLUE}${BOLD}  ║      In collaboration with Jeff & Brandan                   ║${RESET}"
     echo -e "${BLUE}${BOLD}  ║                                                              ║${RESET}"
     echo -e "${BLUE}${BOLD}  ╚══════════════════════════════════════════════════════════════╝${RESET}"
     echo

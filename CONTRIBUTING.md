@@ -2,8 +2,6 @@
 
 We welcome contributions from the community! Join us at https://Launchmyopenclaw.com to connect with other contributors and users.
 
-In collaboration with Jeff & Brandan.
-
 ## How to Contribute
 
 1. Fork this repository

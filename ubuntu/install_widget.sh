@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # install_widget.sh — Launch My OpenClaw Control Panel installer
-# https://Launchmyopenclaw.com — In collaboration with Jeff & Brandan
+# https://Launchmyopenclaw.com
 # Usage:
 #   curl -fsSL https://raw.githubusercontent.com/10xcoldleads/clawglue/main/ubuntu/install_widget.sh | sudo bash
 #   curl -fsSL https://raw.githubusercontent.com/10xcoldleads/clawglue/dev/ubuntu/install_widget.sh  | sudo bash -s -- dev

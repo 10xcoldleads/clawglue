@@ -3,7 +3,7 @@
 # Fixes OpenClaw installs that used the legacy system service.
 # Removes the manual openclaw.service, re-installs via the official installer,
 # and enables linger so the user service starts at boot.
-# https://Launchmyopenclaw.com — In collaboration with Jeff & Brandan
+# https://Launchmyopenclaw.com
 #
 # Usage:
 #   sudo bash fix_openclaw.sh
