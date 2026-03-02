@@ -4,10 +4,10 @@
 
 set -e
 
-# Branch is passed as $1 (e.g. "dev"). Defaults to "main".
-BRANCH="${1:-main}"
+# Branch is passed as $1 (e.g. "dev"). Defaults to "dev".
+BRANCH="${1:-dev}"
 if [[ "$BRANCH" != "main" && "$BRANCH" != "dev" ]]; then
-    BRANCH="main"
+    BRANCH="dev"
 fi
 
 # ── Colors ────────────────────────────────────────────────────────────────────
