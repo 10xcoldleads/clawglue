@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Launch My OpenClaw — Universal Ubuntu VPS Setup Script
+Universal Ubuntu VPS Setup Script
 Handles both SSH and RDP initial access scenarios
 Configures RDP, Tailscale, security lockdown, and installs OpenClaw + Chrome
-https://Launchmyopenclaw.com
+Author: Brandon
 """
 
 import os
@@ -1301,7 +1301,7 @@ TAILSCALE TROUBLESHOOTING:
         self.log("Installing security check tool...")
 
         script = r"""#!/bin/bash
-# Launch My OpenClaw — Security Verification
+# SecureClaw Security Verification
 
 # ── Auto-elevate to root ───────────────────────────────────────────────────────
 if [[ $EUID -ne 0 ]]; then
@@ -1330,7 +1330,7 @@ RESTART_SVCS=()
 clear
 echo
 echo -e "${BOLD}  ╔══════════════════════════════════════════════════════════════╗${RESET}"
-echo -e "${BOLD}  ║     🦞  Launch My OpenClaw — Security Verification          ║${RESET}"
+echo -e "${BOLD}  ║        🦞  SecureClaw Security Verification                 ║${RESET}"
 echo -e "${BOLD}  ║        $(date '+%Y-%m-%d %H:%M:%S')                                 ║${RESET}"
 echo -e "${BOLD}  ╚══════════════════════════════════════════════════════════════╝${RESET}"
 
@@ -1551,7 +1551,7 @@ Version=1.0
 Type=Application
 Name=Security Check
 Comment=Verify firewall and security settings
-Exec=xfce4-terminal --title="Launch My OpenClaw Security Check" -e /usr/local/bin/security-check
+Exec=xfce4-terminal --title="SecureClaw Security Check" -e /usr/local/bin/security-check
 Icon=security-high
 Terminal=false
 Categories=System;Security;
