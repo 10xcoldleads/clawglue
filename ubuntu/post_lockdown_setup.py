@@ -389,22 +389,11 @@ fi
 
 # ── OpenClaw ──────────────────────────────────────────────────────────────────
 section "OpenClaw"
-if systemctl is-active --quiet openclaw; then
-    pass "OpenClaw service is running"
-    oc_ports=$(ss -tlnp 2>/dev/null | grep -i openclaw | awk '{print $4}' | sed 's/.*://' | sort -u)
-    if [ -n "$oc_ports" ]; then
-        for port in $oc_ports; do
-            if echo "$ufw_out" | grep -q "$port"; then
-                pass "OpenClaw port $port has an explicit UFW rule"
-            else
-                info "OpenClaw port $port — covered by UFW default deny incoming"
-            fi
-        done
-    else
-        info "OpenClaw does not expose a network port"
-    fi
+OC_USER=$(awk -F: '$3 >= 1000 && $6 ~ /^\/home/ {print $1; exit}' /etc/passwd)
+if [ -n "$OC_USER" ] && su - "$OC_USER" -c 'XDG_RUNTIME_DIR="/run/user/$(id -u)" systemctl --user is-active --quiet openclaw-gateway' 2>/dev/null; then
+    pass "OpenClaw gateway service is running (user: $OC_USER)"
 else
-    warn "OpenClaw service is not running"; RESTART_SVCS+=("openclaw")
+    warn "OpenClaw gateway service is not running"
 fi
 
 # ── Services ──────────────────────────────────────────────────────────────────
@@ -529,7 +518,7 @@ Version=1.0
 Type=Application
 Name=Security Check
 Comment=Verify firewall and security settings
-Exec=xfce4-terminal --title="Launch My OpenClaw Security Check" -e /usr/local/bin/security-check
+Exec=x-terminal-emulator -e /usr/local/bin/security-check
 Icon=security-high
 Terminal=false
 Categories=System;Security;
@@ -816,9 +805,13 @@ WantedBy=timers.target
             chrome_version = "Installation failed"
         
         try:
-            openclaw_result = self.run_command("systemctl is-active openclaw", check=False)
+            install_user = self.get_install_user()
+            openclaw_result = self.run_command(
+                f"su - {install_user} -c 'XDG_RUNTIME_DIR=\"/run/user/$(id -u)\" systemctl --user is-active openclaw-gateway'",
+                check=False
+            )
             openclaw_status = "Running" if openclaw_result.stdout.strip() == "active" else "Installed (service not active)"
-        except:
+        except Exception:
             openclaw_status = "Installation failed"
         
         report = f"""

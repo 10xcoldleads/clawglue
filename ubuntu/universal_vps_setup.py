@@ -138,8 +138,9 @@ class UniversalVPSSetup:
         try:
             root = tk.Tk()
             root.withdraw()
+            root.destroy()
             return True
-        except:
+        except Exception:
             return False
 
     def get_os_codename(self):
@@ -628,8 +629,9 @@ class UniversalVPSSetup:
             raise subprocess.CalledProcessError(cp_result.returncode, 'chpasswd')
 
         xsession_path = f"/home/{username}/.xsession"
+        session_cmd = "exec gnome-session" if self.desktop_type == "gnome" else "exec xfce4-session"
         with open(xsession_path, "w") as f:
-            f.write("#!/bin/bash\nexec xfce4-session\n")
+            f.write(f"#!/bin/bash\n{session_cmd}\n")
         self.run_command(f"chown {username}:{username} {xsession_path}")
         self.run_command(f"chmod 755 {xsession_path}")
 
@@ -714,7 +716,7 @@ code=20
         else:
             self.log("Unknown desktop type — skipping sleep/lock config", "WARNING")
 
-        self.run_command("ufw allow 3389/tcp", check=False)
+        self.run_command("ufw allow from 100.64.0.0/10 to any port 3389", check=False)
 
         if not changes_made:
             self.log("RDP session persistence is already properly configured - no changes needed", "SUCCESS")
@@ -1412,22 +1414,11 @@ fi
 
 # ── OpenClaw ──────────────────────────────────────────────────────────────────
 section "OpenClaw"
-if systemctl is-active --quiet openclaw; then
-    pass "OpenClaw service is running"
-    oc_ports=$(ss -tlnp 2>/dev/null | grep -i openclaw | awk '{print $4}' | sed 's/.*://' | sort -u)
-    if [ -n "$oc_ports" ]; then
-        for port in $oc_ports; do
-            if echo "$ufw_out" | grep -q "$port"; then
-                pass "OpenClaw port $port has an explicit UFW rule"
-            else
-                info "OpenClaw port $port — covered by UFW default deny incoming"
-            fi
-        done
-    else
-        info "OpenClaw does not expose a network port"
-    fi
+OC_USER=$(awk -F: '$3 >= 1000 && $6 ~ /^\/home/ {print $1; exit}' /etc/passwd)
+if [ -n "$OC_USER" ] && su - "$OC_USER" -c 'XDG_RUNTIME_DIR="/run/user/$(id -u)" systemctl --user is-active --quiet openclaw-gateway' 2>/dev/null; then
+    pass "OpenClaw gateway service is running (user: $OC_USER)"
 else
-    warn "OpenClaw service is not running"; RESTART_SVCS+=("openclaw")
+    warn "OpenClaw gateway service is not running"
 fi
 
 # ── Services ──────────────────────────────────────────────────────────────────
@@ -1551,7 +1542,7 @@ Version=1.0
 Type=Application
 Name=Security Check
 Comment=Verify firewall and security settings
-Exec=xfce4-terminal --title="Launch My OpenClaw Security Check" -e /usr/local/bin/security-check
+Exec=x-terminal-emulator -e /usr/local/bin/security-check
 Icon=security-high
 Terminal=false
 Categories=System;Security;
@@ -1743,9 +1734,19 @@ WantedBy=timers.target
             chrome_version = "Installation failed"
 
         try:
-            openclaw_result = self.run_command("systemctl is-active openclaw", check=False)
+            install_user = self.rdp_username
+            if not install_user:
+                user_result = self.run_command(
+                    "awk -F: '$3 >= 1000 && $6 ~ /^\\/home/ {print $1; exit}' /etc/passwd",
+                    check=False
+                )
+                install_user = user_result.stdout.strip()
+            openclaw_result = self.run_command(
+                f"su - {install_user} -c 'XDG_RUNTIME_DIR=\"/run/user/$(id -u)\" systemctl --user is-active openclaw-gateway'",
+                check=False
+            )
             openclaw_status = "Running" if openclaw_result.stdout.strip() == "active" else "Installed (service not active)"
-        except:
+        except Exception:
             openclaw_status = "Installation failed"
 
         rdp_user = self.rdp_username or "your-rdp-user"
@@ -1837,7 +1838,7 @@ WantedBy=timers.target
             # If lockdown already done for SSH users, nothing left to do in phase 1
             if self._step_done("server_locked_down") and self.initial_access_method == "SSH":
                 print(f"\n{Colors.GREEN}Phase 1 already complete.{Colors.ENDC}")
-                print(f"{Colors.WARNING}Reconnect via Tailscale ({self.tailscale_ip}) and run post_lockdown_setup.py{Colors.ENDC}")
+                print(f"{Colors.WARNING}Reconnect via Tailscale ({self.tailscale_ip}) and run: sudo vps-post-setup{Colors.ENDC}")
                 return
 
             response = self.get_user_input(
