@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
-# install_widget.sh — Launch My OpenClaw Control Panel installer
-# https://Launchmyopenclaw.com
+# install_widget.sh — Standalone OpenClaw Control Panel installer
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/10xcoldleads/clawglue/main/ubuntu/install_widget.sh | sudo bash
-#   curl -fsSL https://raw.githubusercontent.com/10xcoldleads/clawglue/dev/ubuntu/install_widget.sh  | sudo bash -s -- dev
+#   curl -fsSL https://raw.githubusercontent.com/brandonbelew/secureclaw/main/ubuntu/install_widget.sh | sudo bash
+#   curl -fsSL https://raw.githubusercontent.com/brandonbelew/secureclaw/dev/ubuntu/install_widget.sh  | sudo bash -s -- dev
 
 set -euo pipefail
 
-REPO_OWNER="10xcoldleads"
-REPO_NAME="clawglue"
+REPO_OWNER="brandonbelew"
+REPO_NAME="secureclaw"
 INSTALL_BIN="/usr/local/bin/openclaw-widget"
 DESKTOP_DIR="/usr/local/share/applications"
 SUDOERS_FILE="/etc/sudoers.d/openclaw-widget"
@@ -61,8 +60,8 @@ echo "[4/7] Installing application menu entry..."
 mkdir -p "$DESKTOP_DIR"
 cat > "${DESKTOP_DIR}/openclaw-widget.desktop" <<'EOF'
 [Desktop Entry]
-Name=Launch My OpenClaw — Control Panel
-Comment=Launch My OpenClaw — service status and launcher
+Name=OpenClaw Control Panel
+Comment=OpenClaw service status and launcher
 Exec=/usr/local/bin/openclaw-widget
 Icon=network-server
 Terminal=false
@@ -76,8 +75,8 @@ EOF
 echo "[5/7] Creating per-user autostart and desktop entries..."
 
 DESKTOP_CONTENT="[Desktop Entry]
-Name=Launch My OpenClaw — Control Panel
-Comment=Launch My OpenClaw — service status and launcher
+Name=OpenClaw Control Panel
+Comment=OpenClaw service status and launcher
 Exec=/usr/local/bin/openclaw-widget
 Icon=network-server
 Terminal=false
@@ -114,8 +113,7 @@ update-desktop-database "$DESKTOP_DIR" 2>/dev/null || true
 echo "[7/7] Done!"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo " Launch My OpenClaw — Control Panel installed!"
-echo " https://Launchmyopenclaw.com"
+echo " OpenClaw Control Panel installed successfully!"
 echo ""
 echo " To launch now:       openclaw-widget &"
 echo " Auto-starts on:      next RDP session login"

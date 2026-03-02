@@ -1,9 +1,7 @@
 #!/bin/bash
-# fix_openclaw.sh — Launch My OpenClaw
-# Fixes OpenClaw installs that used the legacy system service.
+# fix_openclaw.sh — Fixes OpenClaw installs that used the legacy system service.
 # Removes the manual openclaw.service, re-installs via the official installer,
 # and enables linger so the user service starts at boot.
-# https://Launchmyopenclaw.com
 #
 # Usage:
 #   sudo bash fix_openclaw.sh
