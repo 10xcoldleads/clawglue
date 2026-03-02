@@ -1,5 +1,5 @@
 #!/bin/bash
-# Launch My OpenClaw — Ubuntu VPS Setup Installer
+# ClawGlue — Ubuntu VPS Setup Installer
 # https://Launchmyopenclaw.com
 
 set -e
@@ -27,8 +27,9 @@ print_banner() {
     echo
     echo -e "${BLUE}${BOLD}  ╔══════════════════════════════════════════════════════════════╗${RESET}"
     echo -e "${BLUE}${BOLD}  ║                                                              ║${RESET}"
-    echo -e "${BLUE}${BOLD}  ║      🦞  Launch My OpenClaw — Setup Installer                 ║${RESET}"
+    echo -e "${BLUE}${BOLD}  ║      🦞  ClawGlue — Setup Installer                           ║${RESET}"
     echo -e "${BLUE}${BOLD}  ║      Secure Remote Desktop Environment                      ║${RESET}"
+    echo -e "${BLUE}${BOLD}  ║                                By: Ty Shane                  ║${RESET}"
     echo -e "${BLUE}${BOLD}  ║      https://Launchmyopenclaw.com                           ║${RESET}"
     echo -e "${BLUE}${BOLD}  ║                                                              ║${RESET}"
     echo -e "${BLUE}${BOLD}  ╚══════════════════════════════════════════════════════════════╝${RESET}"
