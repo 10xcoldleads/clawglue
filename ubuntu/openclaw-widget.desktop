@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=OpenClaw Control Panel
-Comment=OpenClaw service status and launcher
+Name=Launch My OpenClaw — Control Panel
+Comment=Launch My OpenClaw — service status and launcher
 Exec=/usr/local/bin/openclaw-widget
 Icon=network-server
 Terminal=false

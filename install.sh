@@ -1,5 +1,8 @@
 #!/bin/bash
-# Ubuntu VPS Setup Installer
+# Launch My OpenClaw — Ubuntu VPS Setup Installer
+# https://Launchmyopenclaw.com
+# In collaboration with Jeff & Brandan
+# Forked from SecureClaw by Brandon Belew — modified with attribution
 
 set -e
 
@@ -26,9 +29,10 @@ print_banner() {
     echo
     echo -e "${BLUE}${BOLD}  ╔══════════════════════════════════════════════════════════════╗${RESET}"
     echo -e "${BLUE}${BOLD}  ║                                                              ║${RESET}"
-    echo -e "${BLUE}${BOLD}  ║           🦞  SecureClaw Setup Installer                     ║${RESET}"
-    echo -e "${BLUE}${BOLD}  ║           Secure Remote Desktop Environment                 ║${RESET}"
-    echo -e "${BLUE}${BOLD}  ║                                By: Brandon Belew            ║${RESET}"
+    echo -e "${BLUE}${BOLD}  ║      🦞  Launch My OpenClaw — Setup Installer                 ║${RESET}"
+    echo -e "${BLUE}${BOLD}  ║      Secure Remote Desktop Environment                      ║${RESET}"
+    echo -e "${BLUE}${BOLD}  ║      https://Launchmyopenclaw.com                           ║${RESET}"
+    echo -e "${BLUE}${BOLD}  ║      In collaboration with Jeff & Brandan                   ║${RESET}"
     echo -e "${BLUE}${BOLD}  ║                                                              ║${RESET}"
     echo -e "${BLUE}${BOLD}  ╚══════════════════════════════════════════════════════════════╝${RESET}"
     echo
@@ -117,7 +121,7 @@ install_scripts() {
         chmod +x /usr/local/bin/post_lockdown_setup.py
     else
         # Repo not available locally — download from GitHub
-        REPO_BASE="https://raw.githubusercontent.com/brandonbelew/secureclaw/${BRANCH}"
+        REPO_BASE="https://raw.githubusercontent.com/10xcoldleads/clawglue/${BRANCH}"
         if ! command -v curl &> /dev/null; then
             apt-get install -y -qq curl > /dev/null 2>&1
         fi
@@ -135,7 +139,7 @@ create_shortcuts() {
 
     cat > /usr/local/bin/vps-setup << EOF
 #!/bin/bash
-REPO_BASE="https://raw.githubusercontent.com/brandonbelew/secureclaw/${BRANCH}"
+REPO_BASE="https://raw.githubusercontent.com/10xcoldleads/clawglue/${BRANCH}"
 curl -fsSL "\$REPO_BASE/ubuntu/universal_vps_setup.py?\$(date +%s)" -o /usr/local/bin/universal_vps_setup.py \
     && chmod +x /usr/local/bin/universal_vps_setup.py \
     || echo "  Warning: could not fetch latest script, running cached version"
@@ -144,7 +148,7 @@ EOF
 
     cat > /usr/local/bin/vps-post-setup << EOF
 #!/bin/bash
-REPO_BASE="https://raw.githubusercontent.com/brandonbelew/secureclaw/${BRANCH}"
+REPO_BASE="https://raw.githubusercontent.com/10xcoldleads/clawglue/${BRANCH}"
 if curl -fsSL "\$REPO_BASE/ubuntu/post_lockdown_setup.py?\$(date +%s)" -o /usr/local/bin/post_lockdown_setup.py; then
     chmod +x /usr/local/bin/post_lockdown_setup.py
     sed -i 's/^REPO_BRANCH_OVERRIDE = None.*\$/REPO_BRANCH_OVERRIDE = "${BRANCH}"/' /usr/local/bin/post_lockdown_setup.py
@@ -171,6 +175,9 @@ show_complete() {
     echo -e "  ${GREEN}  ✓${RESET}  Tailscale VPN — secure remote access from anywhere"
     echo -e "  ${GREEN}  ✓${RESET}  OpenClaw AI assistant — running as a background service"
     echo -e "  ${GREEN}  ✓${RESET}  Google Chrome browser"
+    echo
+    echo -e "  ${CYAN}${BOLD}  Join the Launch My OpenClaw community!${RESET}"
+    echo -e "  ${CYAN}  https://Launchmyopenclaw.com${RESET}"
     echo
     print_divider
     echo
