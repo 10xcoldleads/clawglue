@@ -716,7 +716,7 @@ code=20
         else:
             self.log("Unknown desktop type — skipping sleep/lock config", "WARNING")
 
-        self.run_command("ufw allow from 100.64.0.0/10 to any port 3389", check=False)
+        self.run_command("ufw allow 3389/tcp", check=False)
 
         if not changes_made:
             self.log("RDP session persistence is already properly configured - no changes needed", "SUCCESS")
