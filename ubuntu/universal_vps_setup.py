@@ -1178,9 +1178,11 @@ TAILSCALE TROUBLESHOOTING:
         if self.initial_access_method == "SSH":
             print(f"\n{Colors.WARNING}  ⚠  Your connection may disconnect — this is normal.{Colors.ENDC}")
             print(f"\n{Colors.BOLD}  What to do next:{Colors.ENDC}")
-            print(f"{Colors.WARNING}  • If you stay connected: run sudo vps-post-setup right here in this window.{Colors.ENDC}")
+            print(f"{Colors.WARNING}  • If you stay connected, run this command right here:{Colors.ENDC}")
+            print(f"{Colors.BOLD}      sudo vps-post-setup{Colors.ENDC}")
             print(f"{Colors.WARNING}  • If you get disconnected: reconnect via SSH to {self.tailscale_ip}{Colors.ENDC}")
-            print(f"{Colors.WARNING}    then run: sudo vps-post-setup{Colors.ENDC}")
+            print(f"{Colors.WARNING}    then run this command:{Colors.ENDC}")
+            print(f"{Colors.BOLD}      sudo vps-post-setup{Colors.ENDC}")
             print(f"{Colors.WARNING}    (this finishes installing OpenClaw and Chrome){Colors.ENDC}")
             print(f"\n{Colors.FAIL}  ✗  IMPORTANT: Do NOT run sudo vps-post-setup inside an RDP session.{Colors.ENDC}")
             print(f"{Colors.FAIL}     Use this console or a direct SSH terminal only.{Colors.ENDC}\n")
@@ -1838,7 +1840,8 @@ WantedBy=timers.target
             # If lockdown already done for SSH users, nothing left to do in phase 1
             if self._step_done("server_locked_down") and self.initial_access_method == "SSH":
                 print(f"\n{Colors.GREEN}Phase 1 already complete.{Colors.ENDC}")
-                print(f"{Colors.WARNING}Reconnect via Tailscale ({self.tailscale_ip}) and run: sudo vps-post-setup{Colors.ENDC}")
+                print(f"{Colors.WARNING}Reconnect via Tailscale ({self.tailscale_ip}) and run this command:{Colors.ENDC}")
+                print(f"{Colors.BOLD}  sudo vps-post-setup{Colors.ENDC}")
                 return
 
             response = self.get_user_input(
@@ -1863,9 +1866,11 @@ WantedBy=timers.target
                     if self.lockdown_server():
                         if self.initial_access_method == "SSH":
                             print(f"\n{Colors.GREEN}{Colors.BOLD}  Phase 1 Complete!{Colors.ENDC}")
-                            print(f"{Colors.WARNING}  • If you stayed connected: run sudo vps-post-setup right here in this window.{Colors.ENDC}")
+                            print(f"{Colors.WARNING}  • If you stayed connected, run this command right here:{Colors.ENDC}")
+                            print(f"{Colors.BOLD}      sudo vps-post-setup{Colors.ENDC}")
                             print(f"{Colors.WARNING}  • If you got disconnected: reconnect via SSH to {self.tailscale_ip}{Colors.ENDC}")
-                            print(f"{Colors.WARNING}    then run: sudo vps-post-setup{Colors.ENDC}")
+                            print(f"{Colors.WARNING}    then run this command:{Colors.ENDC}")
+                            print(f"{Colors.BOLD}      sudo vps-post-setup{Colors.ENDC}")
                             print(f"{Colors.FAIL}  IMPORTANT: Do NOT run sudo vps-post-setup inside an RDP session.{Colors.ENDC}")
                             return
 
