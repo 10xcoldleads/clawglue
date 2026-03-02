@@ -691,8 +691,8 @@ class OpenClawWidget(Gtk.Window):
         self.port = get_dashboard_port()
         self.dash_sublabel.set_text(f"http://127.0.0.1:{self.port}/")
 
+        self._update_tools_ui(tools)
         self.tools_data = tools or []
-        self._update_tools_ui(self.tools_data)
 
         return False  # idle_add callback: don't repeat
 
@@ -804,11 +804,12 @@ class OpenClawWidget(Gtk.Window):
             _, _, rc = run_command("openclaw browser extension install", timeout=60)
             stdout, _, _ = run_command("openclaw browser extension path", timeout=10)
             ext_path = stdout.strip()
-            GLib.idle_add(self._show_plugin_dialog, ext_path, rc)
+            GLib.idle_add(self._show_plugin_dialog, button, ext_path, rc)
 
         threading.Thread(target=do_install, daemon=True).start()
 
-    def _show_plugin_dialog(self, ext_path, rc):
+    def _show_plugin_dialog(self, button, ext_path, rc):
+        button.set_sensitive(True)
         self.plugin_sublabel.set_text("Installs the OpenClaw browser extension")
 
         dialog = Gtk.Dialog(
@@ -866,10 +867,7 @@ class OpenClawWidget(Gtk.Window):
         dialog.run()
         dialog.destroy()
 
-        # Re-enable button
-        for child in self.get_children():
-            pass  # walk would be complex; simpler:
-        self.plugin_sublabel.set_text("Installs the OpenClaw browser extension")
+        return False  # idle_add callback: don't repeat
 
         return False
 

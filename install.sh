@@ -1,5 +1,6 @@
 #!/bin/bash
-# Ubuntu VPS Setup Installer
+# ClawGlue — Ubuntu VPS Setup Installer
+# https://Launchmyopenclaw.com
 
 set -e
 
@@ -26,9 +27,10 @@ print_banner() {
     echo
     echo -e "${BLUE}${BOLD}  ╔══════════════════════════════════════════════════════════════╗${RESET}"
     echo -e "${BLUE}${BOLD}  ║                                                              ║${RESET}"
-    echo -e "${BLUE}${BOLD}  ║           🦞  SecureClaw Setup Installer                     ║${RESET}"
-    echo -e "${BLUE}${BOLD}  ║           Secure Remote Desktop Environment                 ║${RESET}"
-    echo -e "${BLUE}${BOLD}  ║                                By: Brandon Belew            ║${RESET}"
+    echo -e "${BLUE}${BOLD}  ║      🦞  ClawGlue — Setup Installer                           ║${RESET}"
+    echo -e "${BLUE}${BOLD}  ║      Secure Remote Desktop Environment                      ║${RESET}"
+    echo -e "${BLUE}${BOLD}  ║                                By: Ty Shane                  ║${RESET}"
+    echo -e "${BLUE}${BOLD}  ║      https://Launchmyopenclaw.com                           ║${RESET}"
     echo -e "${BLUE}${BOLD}  ║                                                              ║${RESET}"
     echo -e "${BLUE}${BOLD}  ╚══════════════════════════════════════════════════════════════╝${RESET}"
     echo
@@ -94,7 +96,8 @@ install_python() {
         apt-get install -y -qq python3 python3-pip python3-tk > /dev/null 2>&1
     else
         # Ensure tkinter is present even if python3 was pre-installed
-        apt-get install -y -qq python3-tk > /dev/null 2>&1
+        apt-get update -qq
+        apt-get install -y -qq python3-tk > /dev/null 2>&1 || true
     fi
     print_ok
 }
@@ -198,7 +201,7 @@ main() {
     echo
     echo -e "  Type ${YELLOW}${BOLD}INSTALL${RESET} to accept and continue, or anything else to cancel."
     echo
-    read -rp "  > " confirm
+    read -rp "  > " confirm < /dev/tty
     echo
     if [[ "$confirm" != "INSTALL" ]]; then
         echo -e "  ${YELLOW}Cancelled.${RESET} No changes were made to your server."

@@ -1,5 +1,5 @@
 ## Setup
 
 ```bash
-wget -O - https://raw.githubusercontent.com/brandonbelew/secureclaw/main/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/10xcoldleads/clawglue/main/install.sh | sudo bash
 ```
