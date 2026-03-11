@@ -5,6 +5,7 @@
       "name": "Security Check",
       "description": "Verify firewall and SSH lockdown status",
       "version": "1.0",
+      "install_script": "ubuntu/install_security_check.sh",
       "detect_command": "test -f /usr/local/bin/security-check"
     }
   ]

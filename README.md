@@ -2,10 +2,10 @@
 
 **main (stable)**
 ```bash
-wget -qO /tmp/sc-install.sh https://raw.githubusercontent.com/brandonbelew/secureclaw/main/install.sh && sudo bash /tmp/sc-install.sh
+wget -qO /tmp/clawglue-install.sh https://raw.githubusercontent.com/10xcoldleads/clawglue/main/install.sh && sudo bash /tmp/clawglue-install.sh
 ```
 
 **dev (latest)**
 ```bash
-wget -qO /tmp/sc-install.sh https://raw.githubusercontent.com/brandonbelew/secureclaw/dev/install.sh && sudo bash /tmp/sc-install.sh dev
+wget -qO /tmp/clawglue-install.sh https://raw.githubusercontent.com/10xcoldleads/clawglue/dev/install.sh && sudo bash /tmp/clawglue-install.sh dev
 ```

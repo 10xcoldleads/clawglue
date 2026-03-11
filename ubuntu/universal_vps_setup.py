@@ -10,6 +10,7 @@ import os
 import sys
 import subprocess
 import time
+import pwd
 import json
 from pathlib import Path
 import getpass
@@ -21,6 +22,20 @@ import string
 import re
 
 STATE_FILE = "/var/lib/vps-setup/state.json"
+
+def _real_user_homes():
+    """Yield Path objects for /home subdirs owned by real system users (uid >= 1000).
+    Excludes dirs like /home/linuxbrew that are not actual user accounts."""
+    for d in Path("/home").iterdir():
+        if not d.is_dir():
+            continue
+        try:
+            entry = pwd.getpwnam(d.name)
+            if entry.pw_uid >= 1000:
+                yield d
+        except KeyError:
+            continue
+
 
 class Colors:
     """Terminal colors for better UX"""
@@ -138,9 +153,8 @@ class UniversalVPSSetup:
         try:
             root = tk.Tk()
             root.withdraw()
-            root.destroy()
             return True
-        except Exception:
+        except:
             return False
 
     def get_os_codename(self):
@@ -629,9 +643,8 @@ class UniversalVPSSetup:
             raise subprocess.CalledProcessError(cp_result.returncode, 'chpasswd')
 
         xsession_path = f"/home/{username}/.xsession"
-        session_cmd = "exec gnome-session" if self.desktop_type == "gnome" else "exec xfce4-session"
         with open(xsession_path, "w") as f:
-            f.write(f"#!/bin/bash\n{session_cmd}\n")
+            f.write("#!/bin/bash\nexec xfce4-session\n")
         self.run_command(f"chown {username}:{username} {xsession_path}")
         self.run_command(f"chmod 755 {xsession_path}")
 
@@ -1215,6 +1228,7 @@ TAILSCALE TROUBLESHOOTING:
             self.show_gui_progress("Installing Applications", "Installing OpenClaw and Google Chrome...")
 
         self.install_openclaw()
+        self.install_homebrew()
         self.install_chrome()
         self.install_chrome_cleanup()
         self.install_security_check()
@@ -1242,9 +1256,11 @@ TAILSCALE TROUBLESHOOTING:
 
         # Pre-install Node.js as root so the official installer doesn't need
         # sudo internally (which fails without a TTY in a su subprocess).
-        self.log("Installing Node.js...")
+        self.log("Installing Node.js and build tools...")
+        print(f"\n  {Colors.WARNING}{Colors.BOLD}⚠  Note:{Colors.ENDC}{Colors.WARNING} This step can take 2–3 minutes and may appear to hang.{Colors.ENDC}")
+        print(f"  {Colors.WARNING}   If progress stops, press Enter a few times to continue.{Colors.ENDC}\n")
         self.run_command("curl -fsSL https://deb.nodesource.com/setup_22.x | bash -")
-        self.run_command("apt-get install -y nodejs")
+        self.run_command("apt-get install -y nodejs build-essential cmake make g++ python3")
 
         # Run the official OpenClaw installer as the target user.
         # Node.js is already present so the installer skips the sudo step.
@@ -1260,6 +1276,55 @@ TAILSCALE TROUBLESHOOTING:
         self.run_command(f"loginctl enable-linger {install_user}")
         self.log("OpenClaw installed and gateway service registered", "SUCCESS")
         self._save_state(openclaw_installed=True)
+
+    def install_homebrew(self):
+        """Pre-install Homebrew so OpenClaw skills install correctly during onboarding"""
+        if self._step_done("homebrew_installed"):
+            self.log("Homebrew already installed — skipping", "SUCCESS")
+            return
+
+        print(f"\n{Colors.HEADER}=== HOMEBREW INSTALLATION ==={Colors.ENDC}")
+        install_user = self.rdp_username or "root"
+
+        # Check if already present for this user
+        result = self.run_command(
+            f"su - {install_user} -c 'command -v brew'", check=False
+        )
+        if result.returncode == 0:
+            self.log("Homebrew already present — skipping", "SUCCESS")
+            self._save_state(homebrew_installed=True)
+            return
+
+        self.log("Installing Homebrew (required for OpenClaw skills)...")
+        # Extra deps Homebrew needs on Linux beyond what we already installed
+        self.run_command("apt-get install -y -qq file procps")
+
+        # Pre-create the Homebrew prefix as root and give the user ownership
+        # so the installer doesn't need sudo to create /home/linuxbrew
+        self.run_command("mkdir -p /home/linuxbrew/.linuxbrew")
+        self.run_command(f"chown -R {install_user}:{install_user} /home/linuxbrew")
+
+        # Download installer as root, run it as the target user
+        self.run_command(
+            "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh "
+            "-o /tmp/brew_install.sh"
+        )
+        self.run_command(
+            f"su - {install_user} -c 'NONINTERACTIVE=1 bash /tmp/brew_install.sh'",
+            capture_output=False
+        )
+        self.run_command("rm -f /tmp/brew_install.sh", check=False)
+
+        # Add brew to the user's shell profile so it's on PATH after login
+        brew_env = 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"'
+        for rc in [f"/home/{install_user}/.bashrc", f"/home/{install_user}/.profile"]:
+            self.run_command(
+                f"grep -qF 'linuxbrew' {rc} || echo '{brew_env}' >> {rc}",
+                check=False
+            )
+
+        self.log("Homebrew installed", "SUCCESS")
+        self._save_state(homebrew_installed=True)
 
     def install_chrome(self):
         """Install Google Chrome"""
@@ -1303,7 +1368,7 @@ TAILSCALE TROUBLESHOOTING:
         self.log("Installing security check tool...")
 
         script = r"""#!/bin/bash
-# SecureClaw Security Verification
+# ClawGlue Security Verification
 
 # ── Auto-elevate to root ───────────────────────────────────────────────────────
 if [[ $EUID -ne 0 ]]; then
@@ -1332,7 +1397,7 @@ RESTART_SVCS=()
 clear
 echo
 echo -e "${BOLD}  ╔══════════════════════════════════════════════════════════════╗${RESET}"
-echo -e "${BOLD}  ║        🦞  SecureClaw Security Verification                 ║${RESET}"
+echo -e "${BOLD}  ║        🦞  ClawGlue Security Verification                 ║${RESET}"
 echo -e "${BOLD}  ║        $(date '+%Y-%m-%d %H:%M:%S')                                 ║${RESET}"
 echo -e "${BOLD}  ╚══════════════════════════════════════════════════════════════╝${RESET}"
 
@@ -1414,11 +1479,22 @@ fi
 
 # ── OpenClaw ──────────────────────────────────────────────────────────────────
 section "OpenClaw"
-OC_USER=$(awk -F: '$3 >= 1000 && $6 ~ /^\/home/ {print $1; exit}' /etc/passwd)
-if [ -n "$OC_USER" ] && su - "$OC_USER" -c 'XDG_RUNTIME_DIR="/run/user/$(id -u)" systemctl --user is-active --quiet openclaw-gateway' 2>/dev/null; then
-    pass "OpenClaw gateway service is running (user: $OC_USER)"
+if systemctl is-active --quiet openclaw; then
+    pass "OpenClaw service is running"
+    oc_ports=$(ss -tlnp 2>/dev/null | grep -i openclaw | awk '{print $4}' | sed 's/.*://' | sort -u)
+    if [ -n "$oc_ports" ]; then
+        for port in $oc_ports; do
+            if echo "$ufw_out" | grep -q "$port"; then
+                pass "OpenClaw port $port has an explicit UFW rule"
+            else
+                info "OpenClaw port $port — covered by UFW default deny incoming"
+            fi
+        done
+    else
+        info "OpenClaw does not expose a network port"
+    fi
 else
-    warn "OpenClaw gateway service is not running"
+    warn "OpenClaw service is not running"; RESTART_SVCS+=("openclaw")
 fi
 
 # ── Services ──────────────────────────────────────────────────────────────────
@@ -1542,16 +1618,12 @@ Version=1.0
 Type=Application
 Name=Security Check
 Comment=Verify firewall and security settings
-Exec=x-terminal-emulator -e /usr/local/bin/security-check
+Exec=xfce4-terminal --title="ClawGlue Security Check" -e /usr/local/bin/security-check
 Icon=security-high
 Terminal=false
 Categories=System;Security;
 """
-        user_dirs = [
-            d for d in Path("/home").iterdir()
-            if d.is_dir() and d.stat().st_uid >= 1000
-        ]
-        for user_dir in user_dirs:
+        for user_dir in _real_user_homes():
             username = user_dir.name
             desktop_dir = user_dir / "Desktop"
             desktop_dir.mkdir(exist_ok=True)
@@ -1640,10 +1712,7 @@ WantedBy=timers.target
 
         print(f"\n{Colors.HEADER}=== CREATING USER SHORTCUTS ==={Colors.ENDC}")
 
-        user_dirs = [
-            d for d in Path("/home").iterdir()
-            if d.is_dir() and d.stat().st_uid >= 1000
-        ]
+        user_dirs = list(_real_user_homes())
 
         url_shortcuts = [
             {
@@ -1734,19 +1803,9 @@ WantedBy=timers.target
             chrome_version = "Installation failed"
 
         try:
-            install_user = self.rdp_username
-            if not install_user:
-                user_result = self.run_command(
-                    "awk -F: '$3 >= 1000 && $6 ~ /^\\/home/ {print $1; exit}' /etc/passwd",
-                    check=False
-                )
-                install_user = user_result.stdout.strip()
-            openclaw_result = self.run_command(
-                f"su - {install_user} -c 'XDG_RUNTIME_DIR=\"/run/user/$(id -u)\" systemctl --user is-active openclaw-gateway'",
-                check=False
-            )
+            openclaw_result = self.run_command("systemctl is-active openclaw", check=False)
             openclaw_status = "Running" if openclaw_result.stdout.strip() == "active" else "Installed (service not active)"
-        except Exception:
+        except:
             openclaw_status = "Installation failed"
 
         rdp_user = self.rdp_username or "your-rdp-user"
@@ -1838,7 +1897,7 @@ WantedBy=timers.target
             # If lockdown already done for SSH users, nothing left to do in phase 1
             if self._step_done("server_locked_down") and self.initial_access_method == "SSH":
                 print(f"\n{Colors.GREEN}Phase 1 already complete.{Colors.ENDC}")
-                print(f"{Colors.WARNING}Reconnect via Tailscale ({self.tailscale_ip}) and run: sudo vps-post-setup{Colors.ENDC}")
+                print(f"{Colors.WARNING}Reconnect via Tailscale ({self.tailscale_ip}) and run post_lockdown_setup.py{Colors.ENDC}")
                 return
 
             response = self.get_user_input(
