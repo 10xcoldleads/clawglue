@@ -30,7 +30,7 @@ print_banner() {
     echo -e "${BLUE}${BOLD}  ║                                                              ║${RESET}"
     echo -e "${BLUE}${BOLD}  ║      🦞  ClawGlue — Setup Installer                           ║${RESET}"
     echo -e "${BLUE}${BOLD}  ║      Secure Remote Desktop Environment                      ║${RESET}"
-    echo -e "${BLUE}${BOLD}  ║                                By: Belew Consulting LLC     ║${RESET}"
+    echo -e "${BLUE}${BOLD}  ║                                       By: Ty Shane          ║${RESET}"
     echo -e "${BLUE}${BOLD}  ║      https://Launchmyopenclaw.com                           ║${RESET}"
     echo -e "${BLUE}${BOLD}  ║                                                              ║${RESET}"
     echo -e "${BLUE}${BOLD}  ╚══════════════════════════════════════════════════════════════╝${RESET}"
